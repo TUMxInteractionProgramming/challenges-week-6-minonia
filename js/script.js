@@ -1,19 +1,6 @@
 /* start the external action and say hello */
 console.log("App is alive");
 
-$( document ).ready(function() {
-  listChannels(compareNew);
-  loadEmojis();
-  setInterval(function(){ console.log("Updating message elements."); }, 3000);
-});
-
-
-
-// dummyMessage
-
-var dummy = new Message ("hi");
-
-
 /** #10 global #array of channels #arr*/
 var channels = [
     yummy,
@@ -23,11 +10,6 @@ var channels = [
     octoberfest
 ];
 
-for (i = 0; i < channels.length; i++) {
-    channels[i].messages.push(dummy);
-    channels[i].messages.push(dummy);
-    channels[i].messages.push(dummy);
-}
 /** create global variable */
 var currentChannel;
 
@@ -41,51 +23,39 @@ var currentLocation = {
     what3words: "shelf.jetted.purple"
 };
 
-
-// dummy message
-var dummyMessage = new Message("hi");
-
-// var dummy = {
-//     createdBy: "shelf.jetted.purple";
-//     createdOn: date(Tue Oct 09 2018 13:37:34 GMT+0200 (Mitteleuropäische Sommerzeit);
-//     expiresOn: Tue Oct 09 2018 13:52:34 GMT+0200 (Mitteleuropäische Sommerzeit);
-//     latitude: 48.249586;
-//     longitude: 11.634431;
-//     object: {};
-//     own: true;
-//     text: "hi";
-// }
 /**
  * Switch channels name in the right app bar
  * @param channelObject
  */
-function switchChannel(channelObject, channelElement) {
+function switchChannel(channelObject) {
     // Log the channel switch
-    console.log("Tuning in to channel", channelObject.name);
+    console.log("Tuning in to channel", channelObject);
+
     // #10 #new: switching channels aborts "create new channel"-mode
     abortCreationMode();
-    // console.log($({channelElement}));
+
     // Write the new channel to the right app bar using object property
     document.getElementById('channel-name').innerHTML = channelObject.name;
+
     // change the channel location using object property
     document.getElementById('channel-location').innerHTML = 'by <a href="https://w3w.co/'
         + channelObject.createdBy
         + '" target="_blank"><strong>'
         + channelObject.createdBy
         + '</strong></a>';
+
     //#9 selector adjusted for #btns #str
     $('#channel-star i').removeClass('fas far');
     $('#channel-star i').addClass(channelObject.starred ? 'fas' : 'far');
+
+
     /* highlight the selected #channel.
        This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
     $('#channels li').removeClass('selected');
-    // $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
-    // $('').addClass("selected");
-    $(channelElement).addClass('selected');
+    $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
+
     /* store selected channel in global variable */
     currentChannel = channelObject;
-    console.log(channelObject);
-    showMessages();
 }
 
 /* liking a channel on #click */
@@ -156,7 +126,6 @@ function Message(text) {
     this.text = text;
     // own message
     this.own = true;
-    this.object = {};
 }
 
 function sendMessage() {
@@ -172,7 +141,7 @@ function sendMessage() {
 
     // Creating and logging a message with content from the input field
     var message = new Message(text);
-    // console.log("New message:", message);
+    console.log("New message:", message);
 
     // #10 #push the new #message to the current channel's messages array
     currentChannel.messages.push(message);
@@ -200,34 +169,18 @@ function createMessageElement(messageObject) {
     var expiresIn = Math.round((messageObject.expiresOn - Date.now()) / 1000 / 60);
 
     // Creating a message-element
-    var messageElement = $('<div class="message">');
-    console.log(messageElement);
-    messageObject.own ? messageElement.addClass("own") : "" ;
-    // messageElement = $('h3').appendTo(messageElement);
-    var link = '<h3><a href="http://w3w.co/' + messageObject.createdBy + '" target="_blank">'+
+    return '<div class="message'+
+        //this dynamically adds #own to the #message, based on the
+        //ternary operator. We need () in order not to disrupt the return.
+        (messageObject.own ? ' own' : '') +
+        '">' +
+        '<h3><a href="http://w3w.co/' + messageObject.createdBy + '" target="_blank">'+
         '<strong>' + messageObject.createdBy + '</strong></a>' +
         messageObject.createdOn.toLocaleString() +
         '<em>' + expiresIn + ' min. left</em></h3>' +
         '<p>' + messageObject.text + '</p>' +
-        '<button class="accent">+5 min.</button>'
-    var meta = $(messageElement).append(link);
-    messageObject.object = meta;
-    // console.log(meta);
-    return meta;
-
-
-    // '<div class="message'+
-    //     //this dynamically adds #own to the #message, based on the
-    //     //ternary operator. We need () in order not to disrupt the return.
-    //     (messageObject.own ? ' own' : '') +
-    //     '">' +
-    //     '<h3><a href="http://w3w.co/' + messageObject.createdBy + '" target="_blank">'+
-    //     '<strong>' + messageObject.createdBy + '</strong></a>' +
-    //     messageObject.createdOn.toLocaleString() +
-    //     '<em>' + expiresIn + ' min. left</em></h3>' +
-    //     '<p>' + messageObject.text + '</p>' +
-    //     '<button class="accent">+5 min.</button>' +
-    //     '</div>';
+        '<button class="accent">+5 min.</button>' +
+        '</div>';
 }
 
 /* #10 Three #compare functions to #sort channels */
@@ -263,9 +216,8 @@ function compareFavorites(channelA, channelB) {
 
 function listChannels(criterion) {
     // #10 #sorting: #sort channels#array by the criterion #parameter
-    // var x = $('li .selected');
-    // console.log(x);
     channels.sort(criterion);
+
     // #10 #sorting #duplicate: empty list
     $('#channels ul').empty();
 
@@ -273,9 +225,6 @@ function listChannels(criterion) {
     for (i = 0; i < channels.length; i++) {
         $('#channels ul').append(createChannelElement(channels[i]));
     };
-    // this is inefficient - no other way found
-    $('#channels li:contains(' + currentChannel.name + ')').addClass('selected');
-    $('').addClass("selected");
 }
 
 /**
@@ -361,14 +310,7 @@ function createChannelElement(channelObject) {
 
     // create a channel
     var channel = $('<li>').text(channelObject.name);
-    // $('li').click(function() {
-    //   switchChannel(channels, this);
-    // });
-    // add event listener for switchChannel
-    // var hello = channelObject;
-    $( 'li' ).click (function () {
-        switchChannel(channelObject, this);
-    });
+
     // create and append channel meta
     var meta = $('<span>').addClass('channel-meta').appendTo(channel);
 
@@ -379,7 +321,6 @@ function createChannelElement(channelObject) {
     // boxes for some additional metadata
     $('<span>').text(channelObject.expiresIn + ' min').appendTo(meta);
     $('<span>').text(channelObject.messageCount + ' new').appendTo(meta);
-
 
     // The chevron
     $('<i>').addClass('fas').addClass('fa-chevron-right').appendTo(meta);
@@ -413,22 +354,4 @@ function abortCreationMode() {
     $('#app-bar-create').removeClass('show');
     $('#button-create').hide();
     $('#button-send').show();
-}
-
-function showMessages() {
-
-  var slot = -1;
-  for (i = 0; i < channels.length; i++) {
-      if (channels[i].name == currentChannel.name){
-        slot = i;
-    }
-  }
-  $('#messages').empty();
-  var arr = channels[slot].messages;
-  jQuery.each( arr, function( i, val) {
-    // console.log(createMessageElement(val));
-    $('#messages').append(createMessageElement(val));
-    // console.log(val);
-  // Will stop running after "three"
-  });
 }
