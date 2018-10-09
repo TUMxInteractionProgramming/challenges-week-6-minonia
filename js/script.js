@@ -9,6 +9,14 @@ var channels = [
     firstpersononmars,
     octoberfest
 ];
+// dummy messages for testing
+var dummy = new Message("hello");
+var dummyTwo = new Message("this");
+
+for (i=0; i < channels.length; i++) {
+  channels[i].messages.push(dummy);
+  channels[i].messages.push(dummyTwo);
+}
 
 /** create global variable */
 var currentChannel;
@@ -23,13 +31,18 @@ var currentLocation = {
     what3words: "shelf.jetted.purple"
 };
 
+
+// ready handler on load
+$(function() {
+    listChannels(compareNew); loadEmojis();
+  });
 /**
  * Switch channels name in the right app bar
  * @param channelObject
  */
-function switchChannel(channelObject) {
+function switchChannel(channelObject, channelElement) {
     // Log the channel switch
-    console.log("Tuning in to channel", channelObject);
+    console.log("Tuning in to channel", channelObject.name);
 
     // #10 #new: switching channels aborts "create new channel"-mode
     abortCreationMode();
@@ -52,8 +65,8 @@ function switchChannel(channelObject) {
     /* highlight the selected #channel.
        This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
     $('#channels li').removeClass('selected');
-    $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
-
+    // $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
+    $(channelElement).addClass("selected");
     /* store selected channel in global variable */
     currentChannel = channelObject;
 }
@@ -126,6 +139,7 @@ function Message(text) {
     this.text = text;
     // own message
     this.own = true;
+    this.object = {};
 }
 
 function sendMessage() {
@@ -169,7 +183,8 @@ function createMessageElement(messageObject) {
     var expiresIn = Math.round((messageObject.expiresOn - Date.now()) / 1000 / 60);
 
     // Creating a message-element
-    return '<div class="message'+
+
+    var link = '<div class="message'+
         //this dynamically adds #own to the #message, based on the
         //ternary operator. We need () in order not to disrupt the return.
         (messageObject.own ? ' own' : '') +
@@ -181,6 +196,9 @@ function createMessageElement(messageObject) {
         '<p>' + messageObject.text + '</p>' +
         '<button class="accent">+5 min.</button>' +
         '</div>';
+    var div = $(link);
+    messageObject.object = div;
+    return div;
 }
 
 /* #10 Three #compare functions to #sort channels */
@@ -225,6 +243,8 @@ function listChannels(criterion) {
     for (i = 0; i < channels.length; i++) {
         $('#channels ul').append(createChannelElement(channels[i]));
     };
+    $('#channels li').removeClass('selected');
+    $('#channels li:contains(' + currentChannel.name + ')').addClass('selected');
 }
 
 /**
@@ -292,6 +312,19 @@ function createChannel() {
     }
 }
 
+function showMessages() {
+  var arr = []
+  for (i=0; i < channels.length; i++) {
+    if (channels[i].name == currentChannel.name) {
+      arr = channels[i].messages;
+      // console.log(arr);
+    }
+    $.each (arr, function (key, value) {
+      // alert(value);
+      $('#messages').append(createMessageElement(value));
+    })
+  }
+}
 /**
  * This function creates a new jQuery channel <li> element out of a given object
  * @param channelObject a channel object
@@ -310,7 +343,10 @@ function createChannelElement(channelObject) {
 
     // create a channel
     var channel = $('<li>').text(channelObject.name);
-
+    // click handler to call switchChannel
+    $(channel).click(function () {
+      switchChannel(channelObject, this);
+    });
     // create and append channel meta
     var meta = $('<span>').addClass('channel-meta').appendTo(channel);
 
