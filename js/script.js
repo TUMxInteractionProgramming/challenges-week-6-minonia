@@ -10,13 +10,26 @@ var channels = [
     octoberfest
 ];
 // dummy messages for testing
-var dummy = new Message("hello");
-var dummyTwo = new Message("this");
+// var dummy = new Message("hello");
+// var dummyTwo = new Message("this");
+var one = new Message("zero");
+var two = new Message("one");
+var three = new Message ("two");
+var four = new Message ("three");
+var five = new Message ("five");
 
-for (i=0; i < channels.length; i++) {
-  channels[i].messages.push(dummy);
-  channels[i].messages.push(dummyTwo);
-}
+// for (i=0; i < channels.length; i++) {
+//   channels[i].messages.push(dummy);
+//   channels[i].messages.push(dummyTwo);
+// }
+
+channels[0].messages.push(one);
+channels[1].messages.push(two);
+channels[2].messages.push(three);
+channels[3].messages.push(four);
+channels[4].messages.push(five);
+
+
 
 // set interval to ten seconds
 var myVar = setInterval(myTimer, 10000);
@@ -103,7 +116,8 @@ function switchChannel(channelObject, channelElement) {
     console.log("here");
     /* store selected channel in global variable */
     currentChannel = channelObject;
-    showMessages() ;
+    console.log(channelObject);
+    showMessages();
 }
 
 /* liking a channel on #click */
