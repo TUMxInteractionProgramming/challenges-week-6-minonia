@@ -74,17 +74,27 @@ function myFunction() {
   $('counter').html("hi");
 }
 
-// emojis click Handler
-$('#emojis').on('click', '> *', function() {
-  $('#message').val(('#message').val() + "hi")
+// // emojis click Handler
+// $('#emojis').on('click', '> *', function() {
+//   $('#message').val(('#message').val() + "hi")
+// });
+
+
+// ready handler on load not working in editor - but recommended
+
+// $(function() {
+//     listChannels(compareNew);
+//     loadEmojis();
+//     console.log("App is initialized");
+//   });
+
+// ready Handler
+$('document').ready(function(){
+  listChannels(compareNew);
+  loadEmojis();
+  console.log("App is initialized");
 });
 
-
-// ready handler on load
-$(function() {
-    listChannels(compareNew); loadEmojis();
-    console.log("App is initialized");
-  });
 /**
  * Switch channels name in the right app bar
  * @param channelObject
