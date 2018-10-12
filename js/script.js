@@ -82,11 +82,11 @@ function myFunction() {
 
 // ready handler on load not working in editor - but recommended
 
-// $(function() {
-//     listChannels(compareNew);
-//     loadEmojis();
-//     console.log("App is initialized");
-//   });
+$(function() {
+    listChannels(compareNew);
+    loadEmojis();
+    console.log("App is initialized");
+  });
 
 // ready Handler
 // $('document').ready(function(){
