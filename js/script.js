@@ -30,19 +30,12 @@ function myTimer() {
   });
 }
 
+// if (me) {
 
-// tried to set smileys and counter
 
-
-// window.onload=function(){
-//   document.getElementById('message').addEventListener("input", myFunction);
-// }
-
-// function myFunction() {
-//   // alert('hi');
-//   $('#counter').text(($('#message').val().length) + "/140");
-//   $('counter').html("hi");
-// }
+window.onload=function(){
+  document.getElementById('message').addEventListener("input", myFunction);
+}
 
 /** create global variable */
 var currentChannel;
@@ -62,12 +55,16 @@ var currentLocation = {
 //   alert( "Handler for .keyup() called." );
 // });
 
-
+function myFunction() {
+  // alert('hi');
+  $('#counter').text(($('#message').val().length) + "/140");
+  $('counter').html("hi");
+}
 
 // emojis click Handler
-// $('#emojis').on('click', '> *', function() {
-//   $('#message').val(('#message').val() + "")
-// });
+$('#emojis').on('click', '> *', function() {
+  $('#message').val(('#message').val() + "hi")
+});
 
 
 // ready handler on load
