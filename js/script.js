@@ -89,11 +89,11 @@ function myFunction() {
 //   });
 
 // ready Handler
-$('document').ready(function(){
-  listChannels(compareNew);
-  loadEmojis();
-  console.log("App is initialized");
-});
+// $('document').ready(function(){
+//   listChannels(compareNew);
+//   loadEmojis();
+//   console.log("App is initialized");
+// });
 
 /**
  * Switch channels name in the right app bar
