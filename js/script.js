@@ -18,25 +18,6 @@ for (i=0; i < channels.length; i++) {
   channels[i].messages.push(dummyTwo);
 }
 
-// set interval to ten seconds
-var myVar = setInterval(myTimer, 10000);
-
-function myTimer() {
-  console.log("Update messages ...");
-  var arr = currentChannel.messages
-  console.log(arr);
-    $.each(arr, function (key, value){
-      value.update()
-  });
-}
-
-// if (me) {
-
-
-window.onload=function(){
-  document.getElementById('message').addEventListener("input", myFunction);
-}
-
 /** create global variable */
 var currentChannel;
 
@@ -50,27 +31,10 @@ var currentLocation = {
     what3words: "shelf.jetted.purple"
 };
 
-// function to count characters in message box
-// $( "#message" ).change (function() {
-//   alert( "Handler for .keyup() called." );
-// });
-
-function myFunction() {
-  // alert('hi');
-  $('#counter').text(($('#message').val().length) + "/140");
-  $('counter').html("hi");
-}
-
-// emojis click Handler
-$('#emojis').on('click', '> *', function() {
-  $('#message').val(('#message').val() + "hi")
-});
-
 
 // ready handler on load
 $(function() {
     listChannels(compareNew); loadEmojis();
-    console.log("App is initialized");
   });
 /**
  * Switch channels name in the right app bar
@@ -79,7 +43,8 @@ $(function() {
 function switchChannel(channelObject, channelElement) {
     // Log the channel switch
     console.log("Tuning in to channel", channelObject.name);
-      // #10 #new: switching channels aborts "create new channel"-mode
+
+    // #10 #new: switching channels aborts "create new channel"-mode
     abortCreationMode();
 
     // Write the new channel to the right app bar using object property
@@ -95,15 +60,15 @@ function switchChannel(channelObject, channelElement) {
     //#9 selector adjusted for #btns #str
     $('#channel-star i').removeClass('fas far');
     $('#channel-star i').addClass(channelObject.starred ? 'fas' : 'far');
-    /* highlight the selected #channel. This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
-    console.log("here");
+
+
+    /* highlight the selected #channel.
+       This is inefficient (jQuery has to search all channel list items), but we'll change it later on */
     $('#channels li').removeClass('selected');
     // $('#channels li:contains(' + channelObject.name + ')').addClass('selected');
     $(channelElement).addClass("selected");
-    console.log("here");
     /* store selected channel in global variable */
     currentChannel = channelObject;
-    showMessages() ;
 }
 
 /* liking a channel on #click */
@@ -175,18 +140,6 @@ function Message(text) {
     // own message
     this.own = true;
     this.object = {};
-    this.update =   function () {
-        var expiresIn = Math.round((this.expiresOn - Date.now())/ 1000 / 60);
-        //testing
-        // expiresIn -= 10;
-
-        var x = $(this.object).find("em").replaceWith('<em>' + expiresIn + ' min. left</em>');
-        if (expiresIn < 5) {
-           // $(this.object).find("em").addClass("primary");
-           $(this.object).find("em").css({"backgroundColor" : "#3F51B5", "color": "white"});
-        }
-        console.log(this.object);
-    }
 }
 
 function sendMessage() {
@@ -244,10 +197,6 @@ function createMessageElement(messageObject) {
         '<button class="accent">+5 min.</button>' +
         '</div>';
     var div = $(link);
-    $(div).find('button').click(function() {
-      messageObject.expiresOn = new Date(messageObject.expiresOn.getTime() + 5*60000);
-      messageObject.update();
-    });
     messageObject.object = div;
     return div;
 }
@@ -296,7 +245,6 @@ function listChannels(criterion) {
     };
     $('#channels li').removeClass('selected');
     $('#channels li:contains(' + currentChannel.name + ')').addClass('selected');
-    showMessages();
 }
 
 /**
@@ -371,7 +319,6 @@ function showMessages() {
       arr = channels[i].messages;
       // console.log(arr);
     }
-    $('#messages').empty();
     $.each (arr, function (key, value) {
       // alert(value);
       $('#messages').append(createMessageElement(value));
@@ -444,7 +391,3 @@ function abortCreationMode() {
     $('#button-create').hide();
     $('#button-send').show();
 }
-
-
-
-// }

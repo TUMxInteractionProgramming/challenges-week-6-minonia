@@ -1,3 +1,11 @@
+
+var currentLocation = {
+    latitude: 48.249586,
+    longitude: 11.634431,
+    what3words: "shelf.jetted.purple"
+};
+
+
 var currentLocation = {
     latitude: 48.249586,
     longitude: 11.634431,
